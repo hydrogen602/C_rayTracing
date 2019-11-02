@@ -8,10 +8,7 @@ SRCS := $(wildcard *.c)
 all: spirals/tiffReader.o
 	$(CC) -o main spirals/tiffReader.o
 
-primeSpiralsTiff.o:
-	$(CC) $(CFLAGS) -c $(LDLIBS) spirals/primeSpiralsTiff.c
-
-tiffReader.o:
+tiffReader.o: spirals/tiffReader.c spirals/tiffReader.h header.h
 	$(CC) $(CFLAGS) -c $(LDLIBS) spirals/tiffReader.c
 
 

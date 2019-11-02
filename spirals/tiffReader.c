@@ -3,17 +3,7 @@
 #include <string.h>
 
 #include "../header.h"
-
-typedef unsigned short WORD; // 2 bytes
-typedef unsigned int DWORD; // 4 bytes
-
-// https://www.fileformat.info/format/tiff/egff.htm
-typedef struct _TiffHeader
-{
-	WORD  identifier;  /* Byte-order Identifier */
-	WORD  version;     /* TIFF version number (always 2Ah) */
-	DWORD IFDOffset;   /* Offset of the first Image File Directory*/
-} TIFHEAD;
+#include "tiffReader.h"
 
 boolean isProperHeader(TIFHEAD* t) {
     if (t->identifier != 0x4d4d && t->identifier != 0x4949) {
@@ -68,6 +58,44 @@ int fileReader(const char* filename, unsigned char* buffer, unsigned int fileSiz
     return 0;
 }
 
+short readShortFromBuffer(boolean littleEndian, unsigned int offset, unsigned char* buffer, unsigned int fileSize) {
+    if (offset + sizeof(short) >= fileSize) {
+        fprintf(stderr, "ArrayIndexOutOfBoundsException: %lu\n", offset + sizeof(short));
+        exit(1);
+    }
+
+    short result;
+    if (littleEndian) {
+        memcpy(&result, buffer + offset, sizeof(short));
+    }
+    else {
+        short tmp;
+        memcpy(&tmp, buffer + offset, sizeof(short));
+        result = __builtin_bswap16(tmp);        
+    }
+
+    return result;
+}
+
+int readIntFromBuffer(boolean littleEndian, unsigned int offset, unsigned char* buffer, unsigned int fileSize) {
+    if (offset + sizeof(int) >= fileSize) {
+        fprintf(stderr, "ArrayIndexOutOfBoundsException: %lu\n", offset + sizeof(int));
+        exit(1);
+    }
+
+    int result;
+    if (littleEndian) {
+        memcpy(&result, buffer + offset, sizeof(int));
+    }
+    else {
+        int tmp;
+        memcpy(&tmp, buffer + offset, sizeof(int));
+        result = __builtin_bswap32(tmp);        
+    }
+
+    return result;
+}
+
 int parseHeader(TIFHEAD* t, unsigned char* buffer, unsigned int fileSize) {
     // will probably only compile with gcc
 
@@ -96,32 +124,25 @@ int parseHeader(TIFHEAD* t, unsigned char* buffer, unsigned int fileSize) {
         return -1;
     }
 
-    if (littleEndian) {
-        memcpy(&(t->version), buffer + positionInMemory, sizeof(t->version));
-    }
-    else {
-        short tmp;
-        memcpy(&tmp, buffer + positionInMemory, sizeof(t->version));
-        t->version = __builtin_bswap16(tmp);        
-    }
-    positionInMemory += sizeof(t->version);
-    
+    t->version = readShortFromBuffer(littleEndian, positionInMemory, buffer, fileSize);
+    positionInMemory += sizeof(short);
 
-    if (littleEndian) {
-        memcpy(&(t->IFDOffset), buffer + positionInMemory, sizeof(t->IFDOffset));
-    }
-    else {
-        int tmp;
-        memcpy(&tmp, buffer + positionInMemory, sizeof(t->IFDOffset));
-        t->IFDOffset = __builtin_bswap32(tmp);
-    }
-    positionInMemory += sizeof(t->IFDOffset);
+    t->IFDOffset = readIntFromBuffer(littleEndian, positionInMemory, buffer, fileSize);
+    positionInMemory += sizeof(int);
     
     printf("got number: %x\n", t->identifier);
     printf("got version: %x\n", t->version);
     printf("got offset: %x\n", t->IFDOffset);
 
     assert(isProperHeader(t), "Header incorrect\n");
+
+    return 0;
+}
+
+int parseIFD(boolean littleEndian, unsigned int offset, unsigned char* buffer, unsigned int fileSize) {
+    // offset + buffer should be where the IFD is
+
+    
 
     return 0;
 }
@@ -144,7 +165,8 @@ int main(void) {
 
     
     TIFHEAD t;
-    parseHeader(&t, buffer, sizeofImage);
+    result = parseHeader(&t, buffer, sizeofImage);
+    assert(result == 0, "Header Parsing Failed\n");
     
     printf("sizeofImage = %d\n", sizeofImage);
     
