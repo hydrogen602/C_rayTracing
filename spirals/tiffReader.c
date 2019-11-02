@@ -5,6 +5,9 @@
 #include "../header.h"
 #include "tiffReader.h"
 
+#define _printData printf(": %d\n", (t->TagList + i)->DataOffset)
+#define _printDataType printf(": %d\n", (t->TagList + i)->DataType)
+
 boolean isProperHeader(TIFHEAD* t) {
     if (t->identifier != 0x4d4d && t->identifier != 0x4949) {
         return false;
@@ -136,13 +139,88 @@ int parseHeader(TIFHEAD* t, unsigned char* buffer, unsigned int fileSize) {
 
     assert(isProperHeader(t), "Header incorrect\n");
 
+    parseIFD(&(t->nextIDF), littleEndian, t->IFDOffset, buffer, fileSize);
+    free(t->nextIDF.TagList);
+    free(t->nextIDF.bitsPerSample);
+
     return 0;
 }
 
-int parseIFD(boolean littleEndian, unsigned int offset, unsigned char* buffer, unsigned int fileSize) {
+int parseIFD(TIFIFD* t, boolean littleEndian, unsigned int offset, unsigned char* buffer, unsigned int fileSize) {
     // offset + buffer should be where the IFD is
+    t->NumDirEntries = readShortFromBuffer(littleEndian, offset, buffer, fileSize);
+    offset += sizeof(short);
 
-    
+    printf("Number of tags: %d\n", t->NumDirEntries);
+
+    // remember to free this memory, len = t.NumDirEntries
+    t->TagList = malloc(t->NumDirEntries * sizeof(TIFTAG));
+    assertNotNull(t->TagList, "Failed to allocate memory\n");
+
+    printf("Offset: %d\n", offset);
+
+    for (int i = 0; i < t->NumDirEntries; i++) {
+        (t->TagList + i)->TagId = readShortFromBuffer(littleEndian, offset, buffer, fileSize);
+        offset += sizeof(short);
+        printf("TagId: %d\n", (t->TagList + i)->TagId);
+
+        (t->TagList + i)->DataType = readShortFromBuffer(littleEndian, offset, buffer, fileSize);
+        offset += sizeof(short);
+
+        (t->TagList + i)->DataCount = readIntFromBuffer(littleEndian, offset, buffer, fileSize);
+        offset += sizeof(int);
+
+        if ((t->TagList + i)->DataType == 3 && (t->TagList + i)->DataCount == 1) {
+
+            (t->TagList + i)->DataOffset = readShortFromBuffer(littleEndian, offset, buffer, fileSize);
+        }
+        else {
+            (t->TagList + i)->DataOffset = readIntFromBuffer(littleEndian, offset, buffer, fileSize);
+        }
+
+        offset += sizeof(int);
+
+        switch ((t->TagList + i)->TagId)
+        {
+        case 256:
+            t->width = (t->TagList + i)->DataOffset;
+            printf("ImageWidth"); _printData;
+            break;
+        case 257:
+            t->height = (t->TagList + i)->DataOffset;
+            printf("ImageHeight"); _printData;
+            break;
+        case 258:
+            assert((t->TagList + i)->DataType == 3, "BitsPerSample data type wrong\n");
+
+            unsigned int tmpOffset = (t->TagList + i)->DataOffset;
+            t->bitsPerSample = malloc(sizeof(short) * (t->TagList + i)->DataCount);
+            for (int index = 0; index < (t->TagList + i)->DataCount; index++) {
+                *(t->bitsPerSample + index) = readShortFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+                printf("BitsPerSample: %d\n", *(t->bitsPerSample + index));
+            }
+        // case 259:
+        //     assert((t->TagList + i)->DataType == 3, "Compression data type wrong\n");
+
+        //     printf("Compression"); _printData;
+        //     assert((t->TagList + i)->DataOffset == 1, "This program can't deal with compression\n");
+        //     t->compression = (t->TagList + i)->DataOffset;
+            
+        default:
+            break;
+        }
+
+
+        
+    }
+
+    int imageOffset = (t->TagList + 20)->DataOffset;
+    printf("image offset: %x\n", imageOffset);
+
+    printf("final offset: %x\n", offset);
+
+    int tmp = readIntFromBuffer(littleEndian, offset, buffer, fileSize);
+    printf("Afterwards: %d\n", tmp);
 
     return 0;
 }
@@ -168,7 +246,7 @@ int main(void) {
     result = parseHeader(&t, buffer, sizeofImage);
     assert(result == 0, "Header Parsing Failed\n");
     
-    printf("sizeofImage = %d\n", sizeofImage);
+    //printf("sizeofImage = %d\n", sizeofImage);
     
 
     return 0;
