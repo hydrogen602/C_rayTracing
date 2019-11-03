@@ -252,6 +252,7 @@ int parseIFD(TIFIFD* t, boolean littleEndian, unsigned int offset, unsigned char
 
             // ignore 274, 
         case 278:
+            // important for finding image data in image
             assert((t->TagList + i)->DataType == 3 || (t->TagList + i)->DataType == 4, "StripOffsets data type wrong\n");
             printf("RowsPerStrip"); _printData;
             t->rowsPerStrip = (t->TagList + i)->DataOffset;
@@ -286,6 +287,22 @@ int parseIFD(TIFIFD* t, boolean littleEndian, unsigned int offset, unsigned char
             //readIntFromBuffer()
 
             printf("XResolution: %d / %d\n", t->xResolutionNum, t->xResolutionDen);
+            break;
+        case 283:
+            assert((t->TagList + i)->DataType == 5, "YResolution data type wrong\n");
+
+            tmpOffset = (t->TagList + i)->DataOffset;
+            t->yResolutionNum = readIntFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+            tmpOffset += sizeof(int);
+            t->yResolutionDen = readIntFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+            //readIntFromBuffer()
+
+            printf("YResolution: %d / %d\n", t->xResolutionNum, t->xResolutionDen);
+            break;
+        case 284:
+            assert((t->TagList + i)->DataType == 3, "Planar Config data type wrong\n");
+            // afaik 1 means RGBRGB, 2 means RRGGBB
+            printf("Planar Config"); _printData;
             break;
         default:
             break;
