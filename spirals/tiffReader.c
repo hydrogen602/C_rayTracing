@@ -7,6 +7,7 @@
 
 #define _printData printf(": %d\n", (t->TagList + i)->DataOffset)
 #define _printDataType printf(": %d\n", (t->TagList + i)->DataType)
+#define _printDataCount printf(": %d\n", (t->TagList + i)->DataCount)
 
 boolean isProperHeader(TIFHEAD* t) {
     if (t->identifier != 0x4d4d && t->identifier != 0x4949) {
@@ -142,6 +143,7 @@ int parseHeader(TIFHEAD* t, unsigned char* buffer, unsigned int fileSize) {
     parseIFD(&(t->nextIDF), littleEndian, t->IFDOffset, buffer, fileSize);
     free(t->nextIDF.TagList);
     free(t->nextIDF.bitsPerSample);
+    free(t->nextIDF.stripByteCounts);
 
     return 0;
 }
@@ -180,32 +182,111 @@ int parseIFD(TIFIFD* t, boolean littleEndian, unsigned int offset, unsigned char
 
         offset += sizeof(int);
 
+        unsigned int tmpOffset = 0;
         switch ((t->TagList + i)->TagId)
         {
         case 256:
+            assert((t->TagList + i)->DataType == 3 || (t->TagList + i)->DataType == 4, "width data type wrong\n");
+
             t->width = (t->TagList + i)->DataOffset;
             printf("ImageWidth"); _printData;
             break;
         case 257:
+            assert((t->TagList + i)->DataType == 3 || (t->TagList + i)->DataType == 4, "height data type wrong\n");
+            
             t->height = (t->TagList + i)->DataOffset;
             printf("ImageHeight"); _printData;
             break;
         case 258:
             assert((t->TagList + i)->DataType == 3, "BitsPerSample data type wrong\n");
 
-            unsigned int tmpOffset = (t->TagList + i)->DataOffset;
+            tmpOffset = (t->TagList + i)->DataOffset;
             t->bitsPerSample = malloc(sizeof(short) * (t->TagList + i)->DataCount);
+            assertNotNull(t->bitsPerSample, "malloc at bitsPerSample failed")
             for (int index = 0; index < (t->TagList + i)->DataCount; index++) {
                 *(t->bitsPerSample + index) = readShortFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
                 printf("BitsPerSample: %d\n", *(t->bitsPerSample + index));
+                tmpOffset += sizeof(short);
             }
-        // case 259:
-        //     assert((t->TagList + i)->DataType == 3, "Compression data type wrong\n");
+            break;
+        case 259:
+            assert((t->TagList + i)->DataType == 3, "Compression data type wrong\n");
 
-        //     printf("Compression"); _printData;
-        //     assert((t->TagList + i)->DataOffset == 1, "This program can't deal with compression\n");
-        //     t->compression = (t->TagList + i)->DataOffset;
+            printf("Compression"); _printData;
+
+            assert((t->TagList + i)->DataOffset == 1, "This program can't deal with compression\n");
+            t->compression = (t->TagList + i)->DataOffset;
+            break;
+        case 262:
+            // what is this?
+            assert((t->TagList + i)->DataType == 3, "PhotometricInterpretation data type wrong\n");
+            printf("PhotometricInterpretation"); _printData;
+            t->photometricInterpretation = (t->TagList + i)->DataOffset;
+            break;
+        case 273:
+            assert((t->TagList + i)->DataType == 3 || (t->TagList + i)->DataType == 4, "StripOffsets data type wrong\n");
             
+            t->stripCount = (t->TagList + i)->DataCount;
+            t->stripOffsets = malloc((t->TagList + i)->DataCount * sizeof(DWORD));
+            assertNotNull(t->stripOffsets, "malloc at stripOffsets failed\n");
+            
+            tmpOffset = (t->TagList + i)->DataOffset;
+            for (int index = 0; index < (t->TagList + i)->DataCount; index++) {
+                if ((t->TagList + i)->DataType == 3){
+                    *(t->stripOffsets + index) = readShortFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+                    tmpOffset += sizeof(short);
+                }
+                else {
+                    *(t->stripOffsets + index) = readIntFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+                    tmpOffset += sizeof(int);
+                }
+                printf("StripOffsets: %d\n", *(t->stripOffsets + index));
+            }
+            break;
+        case 277:
+            assert((t->TagList + i)->DataType == 3, "SamplesPerPixel data type wrong\n");
+            
+            t->samplesPerPixel = (t->TagList + i)->DataOffset;
+            printf("SamplesPerPixel"); _printData;
+            break;
+
+            // ignore 274, 
+        case 278:
+            assert((t->TagList + i)->DataType == 3 || (t->TagList + i)->DataType == 4, "StripOffsets data type wrong\n");
+            printf("RowsPerStrip"); _printData;
+            t->rowsPerStrip = (t->TagList + i)->DataOffset;
+            break;
+        case 279:
+            //stripByteCounts
+            assert((t->TagList + i)->DataType == 3 || (t->TagList + i)->DataType == 4, "StripByteCounts data type wrong\n");
+            
+            t->stripByteCounts = malloc((t->TagList + i)->DataCount * sizeof(DWORD));
+            assertNotNull(t->stripByteCounts, "malloc at stripByteCounts failed\n");
+            
+            tmpOffset = (t->TagList + i)->DataOffset;
+            for (int index = 0; index < (t->TagList + i)->DataCount; index++) {
+                if ((t->TagList + i)->DataType == 3){
+                    *(t->stripByteCounts + index) = readShortFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+                    tmpOffset += sizeof(short);
+                }
+                else {
+                    *(t->stripByteCounts + index) = readIntFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+                    tmpOffset += sizeof(int);
+                }
+                printf("StripByteCounts: %d\n", *(t->stripByteCounts + index));
+            }
+            break;
+        case 282:
+            assert((t->TagList + i)->DataType == 5, "XResolution data type wrong\n");
+
+            tmpOffset = (t->TagList + i)->DataOffset;
+            t->xResolutionNum = readIntFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+            tmpOffset += sizeof(int);
+            t->xResolutionDen = readIntFromBuffer(littleEndian, tmpOffset, buffer, fileSize);
+            //readIntFromBuffer()
+
+            printf("XResolution: %d / %d\n", t->xResolutionNum, t->xResolutionDen);
+            break;
         default:
             break;
         }

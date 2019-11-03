@@ -20,12 +20,24 @@ typedef struct _TifIfd
 	TIFTAG* TagList;        /* Array of Tags  */
 	DWORD   NextIFDOffset;    /* Offset to next IFD  */
 
+    // main tiff tags
     WORD    height;
     WORD    width;
-
     WORD*   bitsPerSample;
-
     WORD    compression;
+    WORD    photometricInterpretation;
+    DWORD*  stripOffsets;
+    DWORD*  stripByteCounts;
+    WORD    stripCount;
+    WORD    samplesPerPixel;
+    DWORD   rowsPerStrip;
+
+    DWORD   xResolutionNum;
+    DWORD   xResolutionDen;
+    DWORD   yResolutionNum;
+    DWORD   yResolutionDen;
+
+
 
 } TIFIFD;
 
