@@ -302,23 +302,13 @@ int parseIFD(TIFIFD* t, boolean littleEndian, unsigned int offset, unsigned char
         case 284:
             assert((t->TagList + i)->DataType == 3, "Planar Config data type wrong\n");
             // afaik 1 means RGBRGB, 2 means RRGGBB
+            assert((t->TagList + i)->DataOffset == 1, "can only deal with RGBRGB, not with RRGGBB\n");
             printf("Planar Config"); _printData;
             break;
         default:
             break;
         }
-
-
-        
     }
-
-    int imageOffset = (t->TagList + 20)->DataOffset;
-    printf("image offset: %x\n", imageOffset);
-
-    printf("final offset: %x\n", offset);
-
-    int tmp = readIntFromBuffer(littleEndian, offset, buffer, fileSize);
-    printf("Afterwards: %d\n", tmp);
 
     return 0;
 }
