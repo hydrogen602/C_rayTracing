@@ -1,14 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -pedantic -O -std=c99
-LDLIBS = -lm
-
-HEAD := $(wildcard *.h)
-SRCS := $(wildcard *.c)
+#LDLIBS = -lm
 
 all: spirals/tiffReader.o
 	$(CC) -o main spirals/tiffReader.o
 
-tiffReader.o: spirals/tiffReader.c spirals/tiffReader.h header.h
-	$(CC) $(CFLAGS) -c $(LDLIBS) spirals/tiffReader.c
+spirals/tiffReader.o: spirals/tiffReader.c spirals/tiffReader.h header.h
+	echo "compiling!"
+	$(CC) $(CFLAGS) -c spirals/tiffReader.c  
+
+# add $(LDLIBS) for math
 
 
