@@ -113,4 +113,3 @@ dColor_t Ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, sphere_t* geometry) {
 
     return ray_colorShading(ray, lsrc, rh, geometry);
 }
-
