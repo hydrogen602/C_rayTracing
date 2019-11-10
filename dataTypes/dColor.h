@@ -2,13 +2,7 @@
 #define DCOLOR_H_
 
 #include "../header.h"
-
-typedef struct _DoubleBasedColor {
-    double r;
-    double g;
-    double b;
-
-} dColor_t;
+#include "dataTypes.h"
 
 void dColor_print(dColor_t c);
 

@@ -2,12 +2,7 @@
 #define VECT3_H_
 
 #include "../header.h"
-
-typedef struct _VectorLength3 {
-    double x;
-    double y;
-    double z;
-} vect3_t;
+#include "dataTypes.h"
 
 void vect3_print(vect3_t v);
 

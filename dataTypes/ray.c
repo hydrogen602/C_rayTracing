@@ -6,16 +6,18 @@
 #include "sphere.h"
 #include "dColor.h"
 #include "rayHit.h"
+#include "vect3.h"
 
 vect3_t ray_extend(ray_t r, double t) {
-    vect3_t v;
-    v.x = r.src.x + r.dir.x * t;
-    v.y = r.src.y + r.dir.y * t;
-    v.z = r.src.z + r.dir.z * t;
+    vect3_t v = { 
+        r.src.x + r.dir.x * t, 
+        r.src.y + r.dir.y * t, 
+        r.src.z + r.dir.z * t
+    };
     return v;
 }
 
-dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphere_t* geometry) {
+dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t geometry) {
     // geometry array should be made from array.h so that len(geometry) works
 
     // (r)(hit.dis)
@@ -26,7 +28,7 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphere_t* geome
     vect3_t path = vect3_sub(lsrc, pointOfHit);
 
     // | lsrc - pointOfHit |
-    double length = vect3_mag(path);
+    // double length = vect3_mag(path);
 
     //   ^
     //  path
@@ -70,7 +72,7 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphere_t* geome
     return returnVal;
 }
 
-rayHit_t ray_trace(ray_t ray, sphere_t* geometry) {
+rayHit_t ray_trace(ray_t ray, sphereArray_t geometry) {
     // sphere_t array needs to be made from array.h
     // returns a rayHit with distance -1 if nothing was hit
 
@@ -101,7 +103,7 @@ rayHit_t ray_trace(ray_t ray, sphere_t* geometry) {
     }
 }
 
-dColor_t Ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, sphere_t* geometry) {
+dColor_t Ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, sphereArray_t geometry) {
     // must be fancy sphere array from array.h
 
     rayHit_t rh = ray_trace(ray, geometry);

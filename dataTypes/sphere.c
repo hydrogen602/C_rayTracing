@@ -2,9 +2,10 @@
 #include <math.h>
 
 #include "../header.h"
+#include "sphere.h"
 #include "vect3.h"
 #include "ray.h"
-#include "sphere.h"
+
 
 void sphere_print(sphere_t sp) {
     printf("Sphere: center=<%.3f, %.3f, %.3f>, radius=%.3f\n", sp.n.x, sp.n.y, sp.n.z, sp.d);
@@ -51,7 +52,7 @@ double sphere_intersection(sphere_t* sp, ray_t ray) {
 
     double radiusSq = sp->d * sp->d;
 
-    double c = (vec3t_squareOfMag(sp->n) - (2 * vect3_dot(sp->n, ray.src)) + (vect3_squareOfMag(ray.src)) - radiusSq);
+    double c = (vect3_squareOfMag(sp->n) - (2 * vect3_dot(sp->n, ray.src)) + (vect3_squareOfMag(ray.src)) - radiusSq);
 
     // quadratic equation time
 

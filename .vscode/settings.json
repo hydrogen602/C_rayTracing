@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "dcolor.h": "c",
+        "ray.h": "c",
+        "rayhit.h": "c",
+        "sphere.h": "c",
+        "vect3.h": "c"
+    },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}

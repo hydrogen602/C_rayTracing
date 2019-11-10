@@ -1,12 +1,8 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef SPHERE_H_
+#define SPHERE_H_
 
-#include "vect3.h"
-
-typedef struct _SphereGeoObject {
-    vect3_t n;
-    double d;
-} sphere_t;
+#include "../header.h"
+#include "dataTypes.h"
 
 void sphere_print(sphere_t sp);
 
