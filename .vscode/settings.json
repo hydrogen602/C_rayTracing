@@ -4,7 +4,9 @@
         "ray.h": "c",
         "rayhit.h": "c",
         "sphere.h": "c",
-        "vect3.h": "c"
+        "vect3.h": "c",
+        "datatypes.h": "c",
+        "grid.h": "c"
     },
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true

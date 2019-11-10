@@ -37,4 +37,18 @@ typedef struct _RayHit {
     sphere_t* obj;
 } rayHit_t;
 
+typedef struct _ImageGrid {
+    vect3_t src;
+    vect3_t forward;
+    vect3_t up;
+    vect3_t left;
+    vect3_t centerOfGrid;
+    vect3_t topLeftCorner;
+    vect3_t bottomRightCorner;
+    vect3_t rightStepVector;
+    vect3_t downStepVector;
+
+    unsigned int size;
+} grid_t;
+
 #endif

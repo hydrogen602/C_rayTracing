@@ -59,3 +59,8 @@ vect3_t vect3_normalize(vect3_t a) {
 int vect3_equals(vect3_t a, vect3_t b) {
     return fabs(a.x - b.x) < 0.0001 && fabs(a.y - b.y) < 0.0001 && fabs(a.z - b.z) < 0.0001;
 }
+
+vect3_t vect3_init(double x, double y, double z) {
+    vect3_t a = { x, y, z };
+    return a;
+}
