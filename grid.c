@@ -18,8 +18,20 @@ dColor_t grid_rayTraceOnce(grid_t g, int i, int j, sphereArray_t geometry, vect3
     //printf("Direction = ");
     //tmp.print(&tmp);
 
-    dColor_t c = Ray_traceAndHitToDisplay(ray, lsrc, geometry);
+    dColor_t c = ray_traceAndHitToDisplay(ray, lsrc, geometry);
     return c;
+}
+
+double grid_rayTraceOnceDistance(grid_t g, int i, int j, sphereArray_t geometry) {
+    vect3_t xShift = vect3_scale(g.rightStepVector, i);
+    vect3_t yShift = vect3_scale(g.downStepVector, j);
+
+    vect3_t ptOnGrid = vect3_add(vect3_add(g.topLeftCorner, xShift), yShift);
+
+    ray_t ray = { g.src, vect3_sub(ptOnGrid, g.src) };
+
+    rayHit_t rh = ray_trace(ray, geometry);  
+    return rh.dis;     
 }
 
 grid_t grid_init(vect3_t src, vect3_t forward, vect3_t up, unsigned int size) {

@@ -16,7 +16,7 @@ int main() {
     ray_t r = { src, dir };
 
     vect3_t center = { 0, 0, 0 };
-    sphere_t sp = { center, 2 };
+    sphere_t sp = { center, 4 };
     const unsigned int geoCount = 1;
 
     sphereArray_t geometry = newArray(geoCount, sizeof(sphere_t)); 
@@ -37,7 +37,7 @@ int main() {
     //     rh.obj->print(rh.obj);
     // }
 
-    const unsigned int size = 21;
+    const unsigned int size = 11;
 
     vect3_t lsrc = { 0, 0, 100 };
 
@@ -45,8 +45,11 @@ int main() {
 
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            dColor_t d = grid_rayTraceOnce(g, i, j, geometry, lsrc);
-            printf("%.0f %.0f %.0f\t", d.r, d.g, d.b);
+            //dColor_t d = grid_rayTraceOnce(g, i, j, geometry, lsrc);
+            double dis = grid_rayTraceOnceDistance(g, i, j, geometry);
+            printf("%5.2f ", dis);
+
+            //printf("%02x %02x %02x, ", (int)d.r, (int)d.g, (int)d.b);
         }
         printf("\n");
     }

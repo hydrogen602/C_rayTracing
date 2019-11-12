@@ -46,7 +46,7 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t g
         vect3_t surfaceNormal = sphere_getNormal(hit.obj, ray);
 
         double shading = vect3_dot(pathNormal, surfaceNormal);
-        printf("shading = %f\n", shading);
+        //printf("shading = %f\n", shading);
 
         dColor_t returnVal = {shading * 255, shading * 255, shading * 255};
         return returnVal;
@@ -103,7 +103,7 @@ rayHit_t ray_trace(ray_t ray, sphereArray_t geometry) {
     }
 }
 
-dColor_t Ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, sphereArray_t geometry) {
+dColor_t ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, sphereArray_t geometry) {
     // must be fancy sphere array from array.h
 
     rayHit_t rh = ray_trace(ray, geometry);
