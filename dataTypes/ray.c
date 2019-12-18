@@ -40,7 +40,7 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t g
     
     rayHit_t hitPossible = ray_trace(lightRay, geometry);
 
-    if (hitPossible.dis < 0) {
+    if (hitPossible.dis < 0 || hitPossible.dis > vect3_mag(path)) {
         // light ray hit nothing as ray_trace returns -1 in that case
 
         vect3_t surfaceNormal = sphere_getNormal(hit.obj, ray);
@@ -55,19 +55,9 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t g
 
         //lsrc.applyColor(hit.obj.color * math.abs(shading))  
     }
-        // case Some(h) => {
-        //     if (h.dis >= length) {
-        //         // light ray hit something after the light
-        //         val shading = dir.normalize * hit.obj.getNormal(this)
+    
+    // else: something hit blocks the light
 
-        //         require(-1 <= shading && shading <= 1, s"shading should be in [0, 1], instead $shading")
-
-        //         lsrc.applyColor(hit.obj.color * math.abs(shading)) 
-        //     }
-        //     else {
-        //         DColor(0, 0, 0)
-        //     }
-        // }
     dColor_t returnVal = {0, 0, 0};
     return returnVal;
 }

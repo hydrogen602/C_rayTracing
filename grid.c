@@ -15,9 +15,6 @@ dColor_t grid_rayTraceOnce(grid_t g, int i, int j, sphereArray_t geometry, vect3
 
     ray_t ray = { g.src, vect3_sub(ptOnGrid, g.src) };
 
-    //printf("Direction = ");
-    //tmp.print(&tmp);
-
     dColor_t c = ray_traceAndHitToDisplay(ray, lsrc, geometry);
     return c;
 }
