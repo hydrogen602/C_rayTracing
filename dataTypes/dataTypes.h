@@ -5,6 +5,8 @@
  * Defines all structs used in the code
  */
 
+typedef unsigned char byte;
+
 typedef struct _DoubleBasedColor {
     double r;
     double g;
@@ -50,5 +52,13 @@ typedef struct _ImageGrid {
 
     unsigned int size;
 } grid_t;
+
+typedef struct _SceneHolder
+{
+    grid_t grid;
+    sphereArray_t geometry; // length of array is stored in memory block
+    vect3_t lsrc; // light source
+} scene_t;
+
 
 #endif

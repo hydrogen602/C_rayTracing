@@ -3,7 +3,7 @@
 
 #include "dataTypes/dataTypes.h"
 
-dColor_t grid_rayTraceOnce(grid_t g, int i, int j, sphereArray_t geometry, vect3_t lsrc);
+dColor_t grid_rayTraceOnce(scene_t sc, int i, int j);
 
 double grid_rayTraceOnceDistance(grid_t g, int i, int j, sphereArray_t geometry);
 

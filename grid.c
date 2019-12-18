@@ -7,15 +7,16 @@
 #include "dataTypes/ray.h"
 #include "dataTypes/rayHit.h"
 
-dColor_t grid_rayTraceOnce(grid_t g, int i, int j, sphereArray_t geometry, vect3_t lsrc) {
-    vect3_t xShift = vect3_scale(g.rightStepVector, i);
-    vect3_t yShift = vect3_scale(g.downStepVector, j);
+dColor_t grid_rayTraceOnce(scene_t sc, int i, int j) {
 
-    vect3_t ptOnGrid = vect3_add(vect3_add(g.topLeftCorner, xShift), yShift);
+    vect3_t xShift = vect3_scale(sc.grid.rightStepVector, i);
+    vect3_t yShift = vect3_scale(sc.grid.downStepVector, j);
 
-    ray_t ray = { g.src, vect3_sub(ptOnGrid, g.src) };
+    vect3_t ptOnGrid = vect3_add(vect3_add(sc.grid.topLeftCorner, xShift), yShift);
 
-    dColor_t c = ray_traceAndHitToDisplay(ray, lsrc, geometry);
+    ray_t ray = { sc.grid.src, vect3_sub(ptOnGrid, sc.grid.src) };
+
+    dColor_t c = ray_traceAndHitToDisplay(ray, sc.lsrc, sc.geometry);
     return c;
 }
 

@@ -8,6 +8,7 @@
         "datatypes.h": "c",
         "grid.h": "c"
     },
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+    "python.linting.mypyEnabled": true
 }
