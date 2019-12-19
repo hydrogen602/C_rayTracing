@@ -56,7 +56,7 @@ vect3_t vect3_normalize(vect3_t a) {
     return vect3_scale(a, 1.0 / vect3_mag(a));
 }
 
-int vect3_equals(vect3_t a, vect3_t b) {
+bool vect3_equals(vect3_t a, vect3_t b) {
     return fabs(a.x - b.x) < 0.0001 && fabs(a.y - b.y) < 0.0001 && fabs(a.z - b.z) < 0.0001;
 }
 

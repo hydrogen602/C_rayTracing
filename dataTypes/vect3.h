@@ -22,7 +22,7 @@ double vect3_mag(vect3_t a);
 
 vect3_t vect3_normalize(vect3_t a);
 
-int vect3_equals(vect3_t a, vect3_t b);
+bool vect3_equals(vect3_t a, vect3_t b);
 
 vect3_t vect3_init(double x, double y, double z);
 

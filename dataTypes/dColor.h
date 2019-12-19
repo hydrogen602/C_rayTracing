@@ -14,6 +14,6 @@ dColor_t dColor_add(dColor_t a, dColor_t b);
 
 dColor_t dColor_sub(dColor_t a, dColor_t b);
 
-boolean dColor_equals(dColor_t a, dColor_t b);
+bool dColor_equals(dColor_t a, dColor_t b);
 
 #endif

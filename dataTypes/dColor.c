@@ -37,6 +37,6 @@ dColor_t dColor_sub(dColor_t a, dColor_t b) {
     return cNew; 
 }
 
-boolean dColor_equals(dColor_t a, dColor_t b) {
+bool dColor_equals(dColor_t a, dColor_t b) {
     return fabs(a.r - b.r) < 0.0001 && fabs(a.g - b.g) < 0.0001 && fabs(a.b - b.b) < 0.0001;
 }
