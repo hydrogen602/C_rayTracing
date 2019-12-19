@@ -11,6 +11,9 @@ HEADERS += $(wildcard support/*.h)
 all: dataTypes/dColor.o dataTypes/ray.o dataTypes/sphere.o dataTypes/vect3.o array.o grid.o main.o
 	$(CC) -o main dataTypes/dColor.o dataTypes/ray.o dataTypes/sphere.o dataTypes/vect3.o array.o grid.o main.o $(LDLIBS)
 
+pythonInterface: dataTypes/dColor.o dataTypes/ray.o dataTypes/sphere.o dataTypes/vect3.o array.o grid.o pythonInterface.o
+	$(CC) -o pythonInterface dataTypes/dColor.o dataTypes/ray.o dataTypes/sphere.o dataTypes/vect3.o array.o grid.o pythonInterface.o $(LDLIBS)
+
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $*.c -o $@
 

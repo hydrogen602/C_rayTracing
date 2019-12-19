@@ -70,6 +70,7 @@ rayHit_t ray_trace(ray_t ray, sphereArray_t geometry) {
     int geoIndex = -1;
 
     double tmpD;
+
     for (int i = 0; i < len(geometry); ++i) {
         tmpD = sphere_intersection(geometry + i, ray);
 

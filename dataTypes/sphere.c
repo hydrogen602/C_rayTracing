@@ -28,6 +28,9 @@ vect3_t sphere_getNormal(sphere_t* sp, ray_t ray) {
 }
 
 double sphere_intersection(sphere_t* sp, ray_t ray) {
+    if (sp == NULL) {
+        fprintf(stderr, "NULL in sphere intersection\n");
+    }
     /* 
         * r0   =   start point of ray
         * r    =   direction from start

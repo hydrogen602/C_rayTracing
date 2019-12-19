@@ -41,7 +41,7 @@ cdef extern from "dataTypes/dataTypes.h":
 
 cdef extern from "pythonInterface.h":
     void initScene(scene_t *, unsigned int size)
-    int generateImage(byte* red, byte* blue, byte* green, scene_t * sc)
+    int generateImage(byte* rgb, scene_t * sc)
 
 cdef class Scene:
     cdef scene_t * sc
@@ -59,8 +59,8 @@ cdef class Scene:
 
     def generateImagePixels(self):
 
-        cdef np.ndarray[byte, ndim=2, mode="c"] r = np.zeros((self.size, self.size), dtype=np.uint8)
-        cdef np.ndarray[byte, ndim=2, mode="c"] g = np.zeros((self.size, self.size), dtype=np.uint8)
-        cdef np.ndarray[byte, ndim=2, mode="c"] b = np.zeros((self.size, self.size), dtype=np.uint8)
+        cdef np.ndarray[byte, ndim=2, mode="c"] rgb = np.zeros((self.size, self.size * 3), dtype=np.uint8)
 
-        generateImage(&r[0,0], &g[0,0], &b[0,0], self.sc)
+        generateImage(&rgb[0,0], self.sc)
+
+        return rgb
