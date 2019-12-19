@@ -6,6 +6,11 @@
 #include "vect3.h"
 #include "ray.h"
 
+sphere_t newSphere(double x, double y, double z, double radius) {
+    vect3_t v = { x, y, z };
+    sphere_t sp = { v, radius };
+    return sp;
+}
 
 void sphere_print(sphere_t sp) {
     printf("Sphere: center=<%.3f, %.3f, %.3f>, radius=%.3f\n", sp.n.x, sp.n.y, sp.n.z, sp.d);

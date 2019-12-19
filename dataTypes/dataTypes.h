@@ -32,6 +32,15 @@ typedef struct _SphereGeoObject {
     dColor_t color;
 } sphere_t;
 
+typedef struct _TriangleGeoObject {
+    vect3_t a;
+    vect3_t b;
+    vect3_t c;
+    vect3_t n;
+    double d;
+    dColor_t color;
+} triangle_t;
+
 // to differentiate between sphere pointers and arrays
 typedef sphere_t * sphereArray_t;
 
