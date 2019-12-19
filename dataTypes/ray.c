@@ -48,7 +48,8 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t g
         double shading = vect3_dot(pathNormal, surfaceNormal);
         //printf("shading = %f\n", shading);
 
-        dColor_t returnVal = {shading * 255, shading * 255, shading * 255};
+        dColor_t objColor = hit.obj->color;
+        dColor_t returnVal = {shading * objColor.r, shading * objColor.g, shading * objColor.b};
         return returnVal;
 
         //require(-1 <= shading && shading <= 1, s"shading should be in [0, 1], instead $shading")

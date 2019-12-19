@@ -15,6 +15,10 @@ ctypedef np.int8_t DTYPE_t
 ctypedef unsigned char byte
 
 cdef extern from "dataTypes/dataTypes.h":
+    ctypedef struct dColor_t:
+        double r
+        double g
+        double b
     ctypedef struct vect3_t:
         double x
         double y
@@ -22,6 +26,7 @@ cdef extern from "dataTypes/dataTypes.h":
     ctypedef struct sphere_t:
         vect3_t n
         double d
+        dColor_t color
     ctypedef struct grid_t:
         vect3_t src
         vect3_t forward

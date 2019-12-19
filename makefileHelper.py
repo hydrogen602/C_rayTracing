@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+raise Exception("Dont use this code")
+
 import os
 
 start = 'CC = gcc\nCFLAGS = -Wall -pedantic -O -std=c99\nLDLIBS = -lm\n# add $(LDLIBS) for math\n'
 
-def evaluateFolder(folder: str) -> (list, str):
+def evaluateFolder(folder: str):# -> (list, str):
     files = filter(lambda x: x.endswith('.c'), os.listdir(folder))
 
     allObjectFiles = []

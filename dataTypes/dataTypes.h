@@ -29,6 +29,7 @@ typedef struct _Ray {
 typedef struct _SphereGeoObject {
     vect3_t n;
     double d;
+    dColor_t color;
 } sphere_t;
 
 // to differentiate between sphere pointers and arrays

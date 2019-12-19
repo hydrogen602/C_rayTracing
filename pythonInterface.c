@@ -14,7 +14,8 @@
 void initScene(scene_t * sc, unsigned int size) {
     grid_t g = grid_init(vect3_init(10, 0, 0), vect3_init(-1, 0, 0), vect3_init(0, 0, 1), size);
     vect3_t center = { 0, 0, 0 };
-    sphere_t sp = { center, 4 };
+    dColor_t lightBlue = { 162, 209, 230 };
+    sphere_t sp = { center, 4, lightBlue };
     sphereArray_t geo = newArray(1, sizeof(sphere_t));
     geo[0] = sp;
 
