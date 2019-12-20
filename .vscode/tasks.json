@@ -12,6 +12,43 @@
             "options": {
 
             }
+        },
+        {
+            "type": "shell",
+            "label": "python build",
+            "command": "make",
+            "args": [
+                "clean",
+                "py"
+            ],
+            "options": {
+
+            }
+        },
+        {
+            "type": "shell",
+            "label": "regular build",
+            "command": "make",
+            "args": [
+                "clean",
+                "all"
+            ],
+            "options": {
+
+            }
+        },
+        {
+            "type": "shell",
+            "label": "main build debug",
+            "command": "make",
+            "args": [
+                "clean",
+                "CFLAGS=-g -O0",
+                "all"
+            ],
+            "options": {
+
+            }
         }
     ],
     "version": "2.0.0"

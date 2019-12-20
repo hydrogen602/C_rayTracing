@@ -5,7 +5,7 @@ import numpy as np
 
 ext_modules = [
     Extension("main",
-              sources=["interface.pyx", "array.c", "grid.c", "pythonInterface.c", "dataTypes/dColor.c", "dataTypes/ray.c", "dataTypes/sphere.c",  "dataTypes/vect3.c"]
+              sources=["interface.pyx", "array.c", "grid.c", "pythonInterface.c", "dataTypes/dColor.c", "dataTypes/ray.c", "dataTypes/sphere.c",  "dataTypes/vect3.c", "dataTypes/triangle.c", "dataTypes/geometry.c"]
               )
     ]
 

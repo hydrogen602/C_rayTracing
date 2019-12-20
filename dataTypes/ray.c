@@ -4,9 +4,10 @@
 #include "../header.h"
 #include "ray.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "dColor.h"
-#include "rayHit.h"
 #include "vect3.h"
+#include "geometry.h"
 
 vect3_t ray_extend(ray_t r, double t) {
     vect3_t v = { 
@@ -17,7 +18,7 @@ vect3_t ray_extend(ray_t r, double t) {
     return v;
 }
 
-dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t geometry) {
+dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, geometry_t* geometry) {
     // geometry array should be made from array.h so that len(geometry) works
 
     // (r)(hit.dis)
@@ -40,15 +41,25 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t g
     
     rayHit_t hitPossible = ray_trace(lightRay, geometry);
 
+    vect3_t v = {-1,0,0};
+    if (vect3_equals(ray.dir, v)) {
+        printf("light hit dis = %.1f\n", hitPossible.dis);
+    }
+
     if (hitPossible.dis < 0 || hitPossible.dis > vect3_mag(path)) {
         // light ray hit nothing as ray_trace returns -1 in that case
 
-        vect3_t surfaceNormal = sphere_getNormal(hit.obj, ray);
+        vect3_t surfaceNormal = getNormal(hit.obj, ray);
 
         double shading = vect3_dot(pathNormal, surfaceNormal);
+        if (vect3_equals(ray.dir, v)) {
+            printf("shading = %.1f\n", shading);
+            printf("pathNormal = < %.1f, %.1f, %.1f>\n", pathNormal.x, pathNormal.y, pathNormal.z);
+            printf("surfaceNormal = < %.1f, %.1f, %.1f>\n", surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
+        }
         //printf("shading = %f\n", shading);
 
-        dColor_t objColor = hit.obj->color;
+        dColor_t objColor = getColor(*(hit.obj));
         dColor_t returnVal = {shading * objColor.r, shading * objColor.g, shading * objColor.b};
         return returnVal;
 
@@ -63,7 +74,7 @@ dColor_t ray_colorShading(ray_t ray, vect3_t lsrc, rayHit_t hit, sphereArray_t g
     return returnVal;
 }
 
-rayHit_t ray_trace(ray_t ray, sphereArray_t geometry) {
+rayHit_t ray_trace(ray_t ray, geometry_t* geometry) {
     // sphere_t array needs to be made from array.h
     // returns a rayHit with distance -1 if nothing was hit
 
@@ -73,7 +84,16 @@ rayHit_t ray_trace(ray_t ray, sphereArray_t geometry) {
     double tmpD;
 
     for (int i = 0; i < len(geometry); ++i) {
-        tmpD = sphere_intersection(geometry + i, ray);
+        if (isSphere(geometry[i])) {
+            tmpD = sphere_intersection(getSphere(geometry + i), ray);
+        }
+        else if (isTriangle(geometry[i])) {
+            tmpD = triangle_intersection(getTriangle(geometry + i), ray);
+        }
+        else {
+            printErrMsg("Invalid geometry type");
+            tmpD = -1;
+        }
 
         if (tmpD > 0.000001 && (tmpD < d || d < 0)) {
             // tmpD > 0.000001 = not intersection with itself
@@ -95,10 +115,16 @@ rayHit_t ray_trace(ray_t ray, sphereArray_t geometry) {
     }
 }
 
-dColor_t ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, sphereArray_t geometry) {
+dColor_t ray_traceAndHitToDisplay(ray_t ray, vect3_t lsrc, geometry_t* geometry) {
     // must be fancy sphere array from array.h
 
     rayHit_t rh = ray_trace(ray, geometry);
+
+    vect3_t v = { -1, 0, 0 };
+    if (vect3_equals(ray.dir, v)) {
+        printf("ray hit dis = %.1f\n", rh.dis);
+    }
+
     if (rh.dis < 0) {
         // nothing hit
         dColor_t c = {0, 0, 0};

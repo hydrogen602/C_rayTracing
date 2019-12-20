@@ -4,20 +4,29 @@
 #include "dataTypes/dataTypes.h"
 #include "dataTypes/dColor.h"
 #include "dataTypes/ray.h"
-#include "dataTypes/rayHit.h"
 #include "dataTypes/sphere.h"
+#include "dataTypes/triangle.h"
 #include "dataTypes/vect3.h"
 #include "grid.h"
+#include "dataTypes/geometry.h"
 
 #include "pythonInterface.h"
 
 void initScene(scene_t * sc, unsigned int size) {
-    grid_t g = grid_init(vect3_init(10, 0, 0), vect3_init(-1, 0, 0), vect3_init(0, 0, 1), size);
+    grid_t g = grid_init(vect3_init(10, 0, 0), vect3_init(-1, 0, 0), vect3_init(0, 1, 0), size);
     vect3_t center = { 0, 0, 0 };
     dColor_t lightBlue = { 162, 209, 230 };
     sphere_t sp = { center, 4, lightBlue };
-    sphereArray_t geo = newArray(1, sizeof(sphere_t));
-    geo[0] = sp;
+
+    geometry_t * geo = newArray(2, sizeof(geometry_t));
+    geo[0] = newGeometrySp(sp);
+    
+    vect3_t a = { 10, -10, -10 };
+    vect3_t b = { 10, 10, -10 };
+    vect3_t c = { -10, 0, 10 };
+    dColor_t red = { 0xff, 0x00, 0x00 };
+
+    geo[1] = newGeometryTr(newTriangle(a, b, c, red));
 
     sc->grid = g;
     sc->geometry = geo;

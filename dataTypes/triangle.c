@@ -4,6 +4,8 @@
 #include "ray.h"
 #include "math.h"
 
+#include "triangle.h"
+
 /*
 typedef struct _TriangleGeoObject {
     vect3_t a;
@@ -15,7 +17,7 @@ typedef struct _TriangleGeoObject {
 } triangle_t;
 */
 
-triangle_t newTriangle(vect3_t a, vect3_t b, vect3_t c) {
+triangle_t newTriangle(vect3_t a, vect3_t b, vect3_t c, dColor_t dc) {
     
     triangle_t t;
     t.a = a;
@@ -25,6 +27,8 @@ triangle_t newTriangle(vect3_t a, vect3_t b, vect3_t c) {
     t.n = vect3_normalize( vect3_cross( vect3_sub(c, a), vect3_sub(c, b) ) );
     //     private val d: Double = n * a //if (n * a > 0) n * a else -(n * a) // distance to origin
     t.d = vect3_dot(t.n, a);
+
+    t.color = dc;
 
     return t;
 }
@@ -55,8 +59,8 @@ double triangle_intersection(triangle_t* tr, ray_t ray) {
         vect3_t lines[3] = { vect3_sub(p, tr->a), vect3_sub(p, tr->b), vect3_sub(p, tr->c) };
 
         vect3_t ab = vect3_sub(tr->b, tr->a);
-        vect3_t bc = vect3_sub(tr->a, tr->c);
-        vect3_t ca = vect3_sub(tr->c, tr->b);
+        vect3_t bc = vect3_sub(tr->c, tr->b);
+        vect3_t ca = vect3_sub(tr->a, tr->c);
 
         vect3_t crosses[3] = { ab, bc, ca };
         for (int i = 0; i < 3; ++i) {

@@ -5,7 +5,6 @@
 #include "dataTypes/dataTypes.h"
 #include "dataTypes/vect3.h"
 #include "dataTypes/ray.h"
-#include "dataTypes/rayHit.h"
 
 dColor_t grid_rayTraceOnce(scene_t sc, int i, int j) {
 
@@ -16,11 +15,16 @@ dColor_t grid_rayTraceOnce(scene_t sc, int i, int j) {
 
     ray_t ray = { sc.grid.src, vect3_sub(ptOnGrid, sc.grid.src) };
 
+    if (i == 5 && j == 5) {
+        printf("ray dir = <%.1f, %.1f, %.1f>\n", ray.dir.x, ray.dir.y, ray.dir.z);
+        printf("ray src = <%.1f, %.1f, %.1f>\n", ray.src.x, ray.src.y, ray.src.z);
+    }
+
     dColor_t c = ray_traceAndHitToDisplay(ray, sc.lsrc, sc.geometry);
     return c;
 }
 
-double grid_rayTraceOnceDistance(grid_t g, int i, int j, sphereArray_t geometry) {
+double grid_rayTraceOnceDistance(grid_t g, int i, int j, geometry_t * geometry) {
     vect3_t xShift = vect3_scale(g.rightStepVector, i);
     vect3_t yShift = vect3_scale(g.downStepVector, j);
 

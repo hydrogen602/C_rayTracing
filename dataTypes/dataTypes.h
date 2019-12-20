@@ -5,6 +5,9 @@
  * Defines all structs used in the code
  */
 
+#define SPHERE_TYPE 0xee
+#define TRIANGLE_TYPE 0xae
+
 typedef unsigned char byte;
 
 typedef struct _DoubleBasedColor {
@@ -41,12 +44,19 @@ typedef struct _TriangleGeoObject {
     dColor_t color;
 } triangle_t;
 
-// to differentiate between sphere pointers and arrays
-typedef sphere_t * sphereArray_t;
+union _GeometryType {
+    sphere_t sp;
+    triangle_t tr;
+};
+
+typedef struct _GeometricObject {
+    byte type;
+    union _GeometryType content;
+} geometry_t;
 
 typedef struct _RayHit {
     double dis;
-    sphere_t* obj;
+    geometry_t* obj;
 } rayHit_t;
 
 typedef struct _ImageGrid {
@@ -66,7 +76,8 @@ typedef struct _ImageGrid {
 typedef struct _SceneHolder
 {
     grid_t grid;
-    sphereArray_t geometry; // length of array is stored in memory block
+    geometry_t* geometry; // length of array is stored in memory block
+
     vect3_t lsrc; // light source
 } scene_t;
 

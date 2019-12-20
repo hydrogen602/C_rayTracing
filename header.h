@@ -5,6 +5,8 @@
 #include "array.h"
 
 #include <stdbool.h>
+#include <stddef.h>
+
 
 // if f is NULL, print msg to stderr and return -1
 #define assertNotNull(f, msg) if ((f) == NULL) { fprintf(stderr, (msg)); return -1; }
