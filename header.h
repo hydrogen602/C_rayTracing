@@ -19,4 +19,6 @@
 
 #define printError(msg) fprintf(stderr, (msg))
 
+#define printErrMsg(msg) fprintf(stderr, "%s at %d in %s\n", (msg), __LINE__, __FILE__)
+
 #endif
