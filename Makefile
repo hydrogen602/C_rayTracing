@@ -26,14 +26,18 @@ dataTypes/%.o: dataTypes/%.c $(HEADERS)
 
 .PHONY: py
 py: setup.py interface.pyx
-	python3 setup.py build_ext --inplace
+	python3.7 setup.py build_ext --inplace
 
 .PHONY: clean
 clean:
-	rm -f *.o dataTypes/*.o main *.so build/temp.linux-x86_64-3.6/*.o build/temp.linux-x86_64-3.6/dataTypes/*.o
+	rm -f *.o dataTypes/*.o main *.so build/temp.linux-x86_64-3.6/*.o build/temp.linux-x86_64-3.6/dataTypes/*.o test.png
 
 .PHONY: debug
 debug: CFLAGS += $(VALGRIND)
 debug: clean all
 	@echo "done compiling"
+
+.PHONY: run
+run: clean py
+	python3.7 run.py
 

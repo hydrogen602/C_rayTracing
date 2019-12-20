@@ -83,7 +83,7 @@ rayHit_t ray_trace(ray_t ray, geometry_t* geometry) {
 
     double tmpD;
 
-    for (int i = 0; i < len(geometry); ++i) {
+    for (unsigned int i = 0; i < len(geometry); ++i) {
         if (isSphere(geometry[i])) {
             tmpD = sphere_intersection(getSphere(geometry + i), ray);
         }

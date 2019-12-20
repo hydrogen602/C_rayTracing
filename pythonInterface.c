@@ -12,21 +12,36 @@
 
 #include "pythonInterface.h"
 
-void initScene(scene_t * sc, unsigned int size) {
-    grid_t g = grid_init(vect3_init(10, 0, 0), vect3_init(-1, 0, 0), vect3_init(0, 1, 0), size);
-    vect3_t center = { 0, 0, 0 };
-    dColor_t lightBlue = { 162, 209, 230 };
-    sphere_t sp = { center, 4, lightBlue };
+void initTriangle(triangle_t * t, double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz) {
+    vect3_t a = { ax, ay, az };
+    vect3_t b = { bx, by, bz };
+    vect3_t c = { cx, cy, cz };
+    dColor_t green = { 0x0, 0xff, 0x0 };
 
-    geometry_t * geo = newArray(2, sizeof(geometry_t));
-    geo[0] = newGeometrySp(sp);
+    triangle_t new = newTriangle(a, b, c, green);
+    *(t) = new;
+}
+
+void initScene(scene_t * sc, unsigned int size, triangle_t * tri, unsigned int triLen) {
+    //grid_t g = grid_init(vect3_init(10, 0, 0), vect3_init(-1, 0, 0), vect3_init(0, 1, 0), size);
+    grid_t g = grid_init(vect3_init(0, 0, 10), vect3_init(0, 0, -1), vect3_init(-1, 0, 0), size);
+    //vect3_t center = { 0, 0, 0 };
+    //dColor_t lightBlue = { 162, 209, 230 };
+    //sphere_t sp = { center, 4, lightBlue };
+
+    geometry_t * geo = newArray(triLen, sizeof(geometry_t));
+    //geo[0] = newGeometrySp(sp);
     
-    vect3_t a = { 10, -10, -10 };
-    vect3_t b = { 10, 10, -10 };
-    vect3_t c = { -10, 0, 10 };
-    dColor_t red = { 0xff, 0x00, 0x00 };
+    // vect3_t a = { 10, -10, -10 };
+    // vect3_t b = { 10, 10, -10 };
+    // vect3_t c = { -10, 0, 10 };
+    // dColor_t green = { 0x00, 0xff, 0x00 };
 
-    geo[1] = newGeometryTr(newTriangle(a, b, c, red));
+    //geo[1] = newGeometryTr(newTriangle(a, b, c, green));
+
+    for (unsigned int i = 0; i < triLen; ++i) {
+        geo[i] = newGeometryTr(tri[i]);
+    }
 
     sc->grid = g;
     sc->geometry = geo;
@@ -56,10 +71,9 @@ int generateImage(byte* rgb, scene_t * scPtr) {
     return 0;
 }
 
-
 int main() {
     scene_t sc;
-    initScene(&sc, 11);
+    initScene(&sc, 11, NULL, 0);
 
     byte rgb[121 * 3];
 
