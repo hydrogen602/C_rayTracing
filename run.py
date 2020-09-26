@@ -29,6 +29,7 @@ for i in range(len(triangles)):
 
 sc = main.Scene(size, tArray)
 rgb = sc.generateImagePixels()
+print("Ray Tracing Done")
 
 import png
 

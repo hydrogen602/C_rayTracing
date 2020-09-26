@@ -15,10 +15,10 @@ dColor_t grid_rayTraceOnce(scene_t sc, int i, int j) {
 
     ray_t ray = { sc.grid.src, vect3_sub(ptOnGrid, sc.grid.src) };
 
-    if (i == 5 && j == 5) {
-        printf("ray dir = <%.1f, %.1f, %.1f>\n", ray.dir.x, ray.dir.y, ray.dir.z);
-        printf("ray src = <%.1f, %.1f, %.1f>\n", ray.src.x, ray.src.y, ray.src.z);
-    }
+    // if (i == 5 && j == 5) {
+    //     printf("ray dir = <%.1f, %.1f, %.1f>\n", ray.dir.x, ray.dir.y, ray.dir.z);
+    //     printf("ray src = <%.1f, %.1f, %.1f>\n", ray.src.x, ray.src.y, ray.src.z);
+    // }
 
     dColor_t c = ray_traceAndHitToDisplay(ray, sc.lsrc, sc.geometry);
     return c;

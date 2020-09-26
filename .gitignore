@@ -7,3 +7,4 @@ main
 spirals/primeSpiralsTiff
 .mypy_cache/*
 pythonInterface
+*.pyc
